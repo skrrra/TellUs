@@ -12,14 +12,31 @@ class Users
         $this->conn = $dbc->getConn();
     }
 
-    public function login(string $username, string $password): string{
-        // validating username/password
-        if ($this->getUser($username, $password)){
-            $_SESSION['logged'] = true;
-            $_SESSION['username'] = $username;
-            return "Login successful!";
+    public function login(string $username, string $password): string
+    {
+        // checking if username and password field are filled
+        if($username && $password){
+            // validating username/password
+            if ($this->getUser($username, $password)){
+                $_SESSION['logged'] = true;
+                $_SESSION['username'] = $username;
+                return "Login successful!";
+            } else{
+                return "Login failed! Try again.";
+            }
         } else{
-            return "Login failed! Try again.";
+            return $this->fieldCheck($username, $password);
+        }
+    }
+
+    private function fieldCheck(string $username, string $password)
+    {
+        if(!$username && !$password){
+            return "Please enter username and password!";
+        } elseif(!$username){
+            return "Please enter username";
+        } elseif(!$password){
+            return "Please enter the password!";
         }
     }
 
@@ -32,7 +49,8 @@ class Users
         return $queryResult->num_rows > 0;
     }
 
-    public function register(string $username, string $password, string $email): string{
+    public function register(string $username, string $password, string $email): string
+    {
         if ($this->userExists($username) == true){
             return "Username already exists!";
         } elseif ($this->emailExists($email) == true){
@@ -46,7 +64,8 @@ class Users
         }
     }
 
-    private function userExists(string $username): bool{
+    private function userExists(string $username): bool
+    {
         $query = $this->conn->prepare("SELECT username FROM users WHERE username= ?");
         $query->bind_param('s', $username);
         $query->execute();
@@ -58,7 +77,8 @@ class Users
         }
     }
 
-    private function emailExists(string $email): bool{
+    private function emailExists(string $email): bool
+    {
         $query = $this->conn->prepare("SELECT email FROM users WHERE email= ?");
         $query->bind_param('s', $email);
         $query->execute();
@@ -70,6 +90,14 @@ class Users
         }
     }
 
+    public function fieldsEmpty(string $username, string $email)
+    {
+        if(!$username){
+            return "Username can not be blank!";
+        } elseif(!$email){
+            return "Email can not be blank!";
+        }
+    }
 }
 
 ?>
