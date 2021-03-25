@@ -1,7 +1,6 @@
 <?php
 
-class Dbc
-{
+class Dbc{
 
     private ?mysqli $conn = null;
 

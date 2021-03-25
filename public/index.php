@@ -2,7 +2,9 @@
 if(isset($_SESSION['logged'])){
     session_start();
 }
+
 include_once 'inc/users.php';
+include_once 'inc/posts.php';
 
 $notification = "";
 $error = "";
@@ -26,11 +28,18 @@ if(isset($_POST['register'])){
     } else{
         $notification = $register->fieldsEmpty($username, $email);
     }
+}
 
 if(isset($_POST['createPost'])){
-
+    $author = $_SESSION['username'];
+    $content = $_POST['postContent'];
+    $postCreate = new Posts();
+    $error = $postCreate->createPost($author, $content);
 }
-    
+
+if(isset($_POST['logout'])){
+    session_destroy();
+    header('location: index.php');
 }
 
 ?>
@@ -45,6 +54,7 @@ if(isset($_POST['createPost'])){
     <title>Tell us</title>
 </head>
 <body>
+    <?php if(!isset($_SESSION['logged'])){ ?>
     <header class="bg-gray-900">
         <div class="">
             <ul class="justify-center flex">
@@ -57,7 +67,6 @@ if(isset($_POST['createPost'])){
             </ul>
         </div>   
     </header>
-    <?php if(!isset($_SESSION['logged'])){ ?>
     <div>
         <div>
             <p class="font-mono text-white font-semibold text-4xl text-center mt-16">Welcome to Tell Us!</p>
@@ -81,13 +90,37 @@ if(isset($_POST['createPost'])){
     </div>
 
     <?php } else{ ?>
-    <div class="flex flex-col mx-auto max-w-2xl my-12 bg-indigo-50 p-4 shadow-xl">
-        <form method="$_POST">
-            <p class="pb-3 text-gray-600">Post as: <span class="font-semibold text-gray-800"><?php echo $_SESSION['username']; ?></span></p>
-            <textarea style="resize:none" class="shadow-lg text-lg border-1 border-red-800 py-2 px-4 text-gray-600 font-mono focus:outline-none" name="postContent" cols="59" rows="5" placeholder="What are you thinking?"></textarea>
-            <button class="float-right block w-32 py-1 mt-4 text-gray-700 border-2 border-blue-100 bg-blue-300 rounded-lg ml-auto hover:bg-blue-400 hover:text-gray-200 focus:outline-none" name="createPost">Create post</button>
-        </form>
-    </div>
+    <header class="bg-gray-900">
+        <div class="">
+            <ul class="justify-center flex">
+                <li class="mx-10 my-4 text-white border-b border-gray-200 hover:text-gray-300"><a href="index.php">Home</a></li>
+                <li class="mx-10 my-4 text-white hover:text-gray-300"><a href="about.php">About</a></li>
+                <li class="mx-10 my-4 text-white hover:text-gray-300"><a href="contact.php">Contact</a></li>
+                <form method="POST">
+                    <button class="mx-10 my-4 text-white hover:text-gray-300 focus:outline-none" name="logout">Logout</button>
+                </form>    
+            </ul>
+        </div>   
+    </header>
+        <div class="flex flex-col mx-auto max-w-2xl my-12 bg-indigo-50 p-4 shadow-xl">
+            <p class="text-red-900"><?php echo $error; ?></p>
+            <form method="POST">
+                <p class="pb-3 text-gray-600">Post as: <span class="font-semibold text-gray-800"><?php echo $_SESSION['username']; ?></span></p>
+                <textarea style="resize:none" class="shadow-lg text-lg border-1 border-red-800 py-2 px-4 text-gray-600 font-mono focus:outline-none" name="postContent" cols="59" rows="5" placeholder="What are you thinking?"></textarea>
+                <button class="float-right block w-32 py-1 mt-4 text-gray-700 border-2 border-blue-100 bg-blue-300 rounded-lg ml-auto hover:bg-blue-400 hover:text-gray-200 focus:outline-none" name="createPost">Create post</button>
+            </form>
+        </div>
+        <div class="flex flex-col mx-auto max-w-2xl my-12 bg-indigo-100 p-4 shadow-xl">
+            <p class="text-center text-gray-600 text-xl">Keep up with others!</p>
+            <div class="bg-white">
+                <?php $auth = new Posts(); foreach($auth->getAuthor() as $test) {?>
+                    <p><?php echo $test; ?></p>
+                <?php } ?>
+                <?php $post = new Posts(); foreach($auth->getPosts() as $test) {?>
+                    <p><?php echo $test; ?></p>
+                <?php } ?>
+            </div>
+        </div>
     <?php } ?>
 </body>
 </html>
