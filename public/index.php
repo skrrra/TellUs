@@ -42,6 +42,13 @@ if(isset($_POST['logout'])){
     header('location: index.php');
 }
 
+if(isset($_GET['del_post'])){
+    $deletePost = new Posts();
+    $id = $_GET['del_post'];
+    $error = $deletePost->deletePost($id);
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,12 +119,15 @@ if(isset($_POST['logout'])){
         </div>
         <div class="flex flex-col mx-auto max-w-2xl my-12 bg-indigo-100 p-4 shadow-xl">
             <p class="text-center text-gray-600 text-xl">Keep up with others!</p>
-            <div class="bg-white">
-                <?php $auth = new Posts(); foreach($auth->getAuthor() as $test) {?>
-                    <p><?php echo $test; ?></p>
-                <?php } ?>
-                <?php $post = new Posts(); foreach($auth->getPosts() as $test) {?>
-                    <p><?php echo $test; ?></p>
+            <div class="">
+                <?php $posts = new Posts(); foreach($posts->getPosts() as $post) { ?>
+                    <div class="mt-16 bg-gray-50 shadow mb-3">
+                        <p class="p-3"><?php echo $post['author']?> says:<span class="float-right"><?php echo $post['time'] ?></span></p>
+                        <p class="bg-gray-100 px-5 py-4"><?php echo $post['content']?></p>
+                        <?php if($_SESSION['username'] == $post['author']){ ?>
+                            <a href="index.php?del_post=<?php echo $post['id']?>"><button class="mt-2 float-right bg-red-500 text-white p-1 rounded">DELETE</button></a>
+                        <?php } ?>
+                    </div>
                 <?php } ?>
             </div>
         </div>

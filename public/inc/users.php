@@ -60,7 +60,8 @@ class Users
             $query = $this->conn->prepare("INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)");
             $query->bind_param('ssss', $username, $password, $email, $role);
             $query->execute();
-            return "Register successful!";
+            return "Registration successful!";
+            echo '<meta http-equiv="refresh" content="2;URL=\'http://localhost/tellus/public/login.php\'">';
         }
     }
 
