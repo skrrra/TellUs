@@ -42,7 +42,7 @@
     </header>
     <div>
         <div>
-            <p class="font-mono text-white font-semibold text-4xl text-center mt-16">Welcome back!</p>
+            <p class="font-mono text-gray-700 font-semibold text-4xl text-center mt-16">Welcome back!</p>
         </div>
         <div class="text-center mt-20 font-lg text-xl">
             <p class="text-gray-500">We are glad to have you back,</p>

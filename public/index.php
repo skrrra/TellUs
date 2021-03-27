@@ -76,7 +76,7 @@ if(isset($_GET['del_post'])){
     </header>
     <div>
         <div>
-            <p class="font-mono text-white font-semibold text-4xl text-center mt-16">Welcome to Tell Us!</p>
+            <p class="font-mono text-gray-700 font-semibold text-4xl text-center mt-16">Welcome to Tell Us!</p>
         </div>
         <div class="text-center mt-20 font-lg text-xl">
             <p class="text-gray-500">Every individual should have right to say what they think.</p>
@@ -123,7 +123,7 @@ if(isset($_GET['del_post'])){
                 <?php $posts = new Posts(); foreach($posts->getPosts() as $post) { ?>
                     <div class="mt-16 bg-gray-50 shadow mb-3">
                         <p class="p-3"><?php echo $post['author']?> says:<span class="float-right"><?php echo $post['time'] ?></span></p>
-                        <p class="bg-gray-100 px-5 py-4"><?php echo $post['content']?></p>
+                        <p class="bg-gray-100 px-5 py-4 break-words"><?php echo $post['content']?></p>
                         <?php if($_SESSION['username'] == $post['author']){ ?>
                             <a href="index.php?del_post=<?php echo $post['id']?>"><button class="mt-2 float-right bg-red-500 text-white p-1 rounded">DELETE</button></a>
                         <?php } ?>

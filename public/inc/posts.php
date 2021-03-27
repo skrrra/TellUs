@@ -24,6 +24,7 @@ class Posts{
         }
     }
 
+    // get post author, time of creation, content, id
     public function getPosts()
     {
         $query = $this->conn->prepare("SELECT author, time, content, id FROM posts");
@@ -45,10 +46,8 @@ class Posts{
         $row = $query->get_result();
 
         while($content = mysqli_fetch_array($row)){
-            // var_dump($content['author']);exit();
             if($username === $content['author']){
-                // var_dump($content);exit();
-                $query = $this->conn->prepare("DELETE FROM posts WHERE id=(?)");
+                $query = $this->conn->prepare("DELETE FROM posts WHERE id=?");
                 $query->bind_param('s', $id);
                 $query->execute();
                 return "Post has been deleted!";
