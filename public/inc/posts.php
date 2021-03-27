@@ -38,18 +38,22 @@ class Posts{
 
     public function deletePost($id)
     {
-        $query = $this->conn->prepare("SELECT author FROM posts");
+        $username = $_SESSION['username'];
+        $query = $this->conn->prepare("SELECT author FROM posts WHERE id=?");
+        $query->bind_param('s', $id);
         $query->execute();
         $row = $query->get_result();
 
         while($content = mysqli_fetch_array($row)){
-            if($_SESSION['username'] != $content){
-                return "You are not allowed to delete that post!";
-                header('Location: index.php');
-            }else{
+            // var_dump($content['author']);exit();
+            if($username === $content['author']){
+                // var_dump($content);exit();
                 $query = $this->conn->prepare("DELETE FROM posts WHERE id=(?)");
                 $query->bind_param('s', $id);
                 $query->execute();
+                return "Post has been deleted!";
+            } else{
+                return "You are not allowed to delete that post!";
             }
         }
     }
